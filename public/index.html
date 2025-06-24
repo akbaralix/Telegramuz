@@ -434,7 +434,9 @@
       let username = ""; // Foydalanuvchi nomi
       // Socket.IO serverga ulanish
       // E'tibor bering: Bu manzilda sizning serveringiz ishlashi kerak.
-      const socket = io("http://localhost:3000"); // Server manzili
+      const socket = io("https://telegramuz.onrender.com", {
+        transports: ["websocket"],
+      });
 
       // --- Foydalanuvchi nomini kiritish funksiyasi ---
       setUsernameBtn.addEventListener("click", () => {
