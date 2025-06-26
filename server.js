@@ -24,8 +24,7 @@ let onlineUsers = {}; // { socketId: username }
 // Static fayllarni (masalan, index.html) taqdim etish uchun
 // Agar siz HTML faylni to'g'ridan-to'g'ri brauzerda ochsangiz, bu qism shart emas.
 // Lekin agar siz server orqali taqdim etmoqchi bo'lsangiz, kerak bo'ladi.
-// app.use(express.static(path.join(__dirname, 'public'))); // public papkasida index.html bor deb faraz qilamiz
-
+app.use(express.static(path.join(__dirname, "public")));
 io.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} foydalanuvchi ulandi`);
 
