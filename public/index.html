@@ -4,368 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Telegramga o'xshash Chat</title>
+    <link rel="icon" type="image/x-icon" href="image/NG.png" />
+    <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <style>
-      /* Umumiy stilizatsiya */
-      body {
-        font-family: "Segoe UI", "Roboto", sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background-color: #e6dedd; /* Telegram foniga o'xshash rang */
-        color: #333;
-        overflow: hidden; /* Mobil uchun ortiqcha scrollni yo'qotish */
-      }
-
-      /* Asosiy chat konteyneri */
-      .chat-container {
-        width: 100%;
-        max-width: 480px; /* Mobil qurilmalar uchun maksimal kenglik */
-        height: 100vh; /* Mobil qurilmalarda to'liq balandlik */
-        background-color: #f7f7f7; /* Ochiqroq fon */
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        border-radius: 0; /* Mobil uchun burchak radiusi yo'q */
-        position: relative;
-      }
-
-      /* Header */
-      .chat-header {
-        background-color: #51717c; /* Telegram header rangi */
-        color: white;
-        padding: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 1.1em;
-        font-weight: 500;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        z-index: 10; /* Kontent ustida turishi uchun */
-      }
-      .chat-header .title {
-        display: flex;
-        align-items: center;
-      }
-      .chat-header .avatar-header {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: #4caf50; /* Doimiy avatar rangi */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2em;
-        font-weight: bold;
-        color: white;
-        margin-right: 10px;
-        text-transform: uppercase;
-      }
-      .online-users-toggle {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.5em;
-        cursor: pointer;
-        padding: 5px;
-        margin-left: 10px;
-      }
-
-      /* Online foydalanuvchilar panel */
-      .online-users-panel {
-        position: absolute;
-        top: 0;
-        right: -250px; /* Yopiq holat */
-        width: 250px;
-        height: 100%;
-        background-color: #f0f0f0;
-        box-shadow: -3px 0 10px rgba(0, 0, 0, 0.1);
-        transition: right 0.3s ease-in-out;
-        z-index: 20;
-        display: flex;
-        flex-direction: column;
-      }
-      .online-users-panel.open {
-        right: 0;
-      }
-      .online-users-panel .header {
-        background-color: #51717c;
-        color: white;
-        padding: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 1.1em;
-        font-weight: 500;
-      }
-      .online-users-panel .close-btn {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.5em;
-        cursor: pointer;
-      }
-      .online-users-list {
-        list-style: none;
-        padding: 10px;
-        margin: 0;
-        overflow-y: auto;
-        flex-grow: 1;
-      }
-      .online-users-list li {
-        padding: 8px 10px;
-        border-bottom: 1px solid #eee;
-        color: #555;
-      }
-      .online-users-list li:last-child {
-        border-bottom: none;
-      }
-
-      /* Chat xabarlari maydoni */
-      .chat-messages {
-        flex-grow: 1;
-        padding: 10px 15px;
-        overflow-y: auto;
-        background-color: #e6dedd; /* Telegram chat foni */
-        display: flex;
-        flex-direction: column;
-        gap: 5px; /* Xabarlar orasidagi bo'shliq */
-        position: relative; /* Avtomatik scroll uchun */
-      }
-
-      /* Har bir xabar uchun stil */
-      .message-wrapper {
-        display: flex;
-        align-items: flex-end; /* Avatar va xabar bir xil balandlikda bo'lishi uchun */
-        margin-bottom: 8px;
-      }
-
-      .message-wrapper.user-message {
-        justify-content: flex-end;
-      }
-      .message-wrapper.other-message {
-        justify-content: flex-start;
-      }
-
-      .avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background-color: #add8e6; /* Boshqa foydalanuvchi avatar rangi */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.9em;
-        font-weight: bold;
-        color: white;
-        flex-shrink: 0; /* Kichraymasligi uchun */
-        margin-bottom: 10px; /* Pastroqqa tushirish */
-      }
-
-      .message-wrapper.user-message .avatar {
-        display: none; /* Foydalanuvchi xabarlari uchun avatarni yashirish */
-      }
-      .message-wrapper.other-message .avatar {
-        margin-right: 8px;
-      }
-
-      .message {
-        max-width: 75%;
-        padding: 8px 12px;
-        border-radius: 18px; /* Telegramga o'xshash yumaloq burchaklar */
-        position: relative;
-        word-wrap: break-word;
-        line-height: 1.3;
-        font-size: 0.95em;
-        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
-      }
-
-      .message.user {
-        background-color: #ddebb5; /* Telegram o'z xabarlari rangi */
-        color: #333;
-        border-bottom-right-radius: 4px; /* O'z xabarining pastki o'ng burchagi */
-      }
-
-      .message.other {
-        background-color: #ffffff; /* Boshqa foydalanuvchi xabari rangi */
-        color: #333;
-        border-bottom-left-radius: 4px; /* Boshqa xabarining pastki chap burchagi */
-      }
-
-      .message .sender-name {
-        font-weight: bold;
-        font-size: 0.85em;
-        color: #2b77af; /* Telegramdagi foydalanuvchi nomi rangi */
-        margin-bottom: 3px;
-        display: block;
-      }
-      .message.user .sender-name {
-        display: none; /* O'z xabarida ism ko'rsatilmasin */
-      }
-
-      .message .timestamp {
-        font-size: 0.7em;
-        color: #888;
-        margin-top: 5px;
-        text-align: right;
-        display: block;
-      }
-
-      /* Xabar yuborish formasi */
-      .chat-input-container {
-        display: flex;
-        padding: 10px 15px;
-        background-color: #f0f0f0;
-        border-top: 1px solid #ddd;
-        align-items: center;
-      }
-      .chat-input-container input {
-        flex-grow: 1;
-        padding: 10px 15px;
-        border: 1px solid #ddd;
-        border-radius: 22px; /* Yumaloq input */
-        font-size: 1em;
-        outline: none;
-        margin-right: 10px;
-      }
-      .chat-input-container button {
-        background-color: #51717c; /* Telegram rangiga o'xshash */
-        color: white;
-        border: none;
-        padding: 10px 18px;
-        border-radius: 22px;
-        cursor: pointer;
-        font-size: 1em;
-        transition: background-color 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 45px; /* Tugma o'lchami */
-        min-height: 45px;
-      }
-      .chat-input-container button:hover:not(:disabled) {
-        background-color: #435e67;
-      }
-      .chat-input-container button:disabled {
-        background-color: #b0b0b0;
-        cursor: not-allowed;
-      }
-
-      /* Username kiritish modali */
-      .username-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.7);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 100;
-      }
-      .username-modal-content {
-        background-color: white;
-        padding: 30px;
-        border-radius: 10px;
-        text-align: center;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-        width: 90%;
-        max-width: 350px;
-      }
-      .username-modal-content h2 {
-        margin-top: 0;
-        color: #51717c;
-      }
-      .username-modal-content input {
-        width: calc(100% - 20px);
-        padding: 10px;
-        margin-bottom: 20px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 1em;
-      }
-      .username-modal-content button {
-        background-color: #51717c;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1em;
-      }
-
-      /* Foydalanuvchi kirgan/chiqqan xabarlari */
-      .system-message {
-        font-size: 0.8em;
-        color: #888;
-        text-align: center;
-        margin: 10px 0;
-        padding: 5px 10px;
-        background-color: rgba(255, 255, 255, 0.7);
-        border-radius: 10px;
-        align-self: center; /* Markazda bo'lishi uchun */
-        width: fit-content;
-        max-width: 80%;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      }
-
-      /* Scrollbar stilizatsiyasi (webkitchi brauzerlar uchun) */
-      .chat-messages::-webkit-scrollbar,
-      .online-users-list::-webkit-scrollbar {
-        width: 6px;
-      }
-      .chat-messages::-webkit-scrollbar-track,
-      .online-users-list::-webkit-scrollbar-track {
-        background: #f1f1f1;
-      }
-      .chat-messages::-webkit-scrollbar-thumb,
-      .online-users-list::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 10px;
-      }
-      .chat-messages::-webkit-scrollbar-thumb:hover,
-      .online-users-list::-webkit-scrollbar-thumb:hover {
-        background: #555;
-      }
-
-      /* Mobil qurilmalar uchun moslashuv (max-width: 600px dan kichik ekranlar uchun) */
-      @media (max-width: 600px) {
-        body {
-          align-items: flex-start; /* Mobil qurilmalarda tepadan boshlash */
-        }
-        .chat-container {
-          border-radius: 0; /* Telefonlarda butun ekranni egallashi uchun */
-          box-shadow: none; /* Mobil qurilmalarda soya kerak emas */
-        }
-        .chat-messages {
-          padding: 8px; /* Ichki bo'shliqni kamaytirish */
-        }
-        .message {
-          max-width: 85%; /* Xabar kengligini oshirish */
-          padding: 7px 10px;
-        }
-        .chat-input-container {
-          padding: 8px 10px;
-        }
-        .chat-input-container input {
-          padding: 8px 12px;
-        }
-        .chat-input-container button {
-          min-width: 40px;
-          min-height: 40px;
-          font-size: 0.9em;
-          padding: 8px 15px;
-        }
-        .chat-header {
-          padding: 12px;
-        }
-      }
-    </style>
   </head>
   <body>
     <div class="username-modal" id="username-modal">
@@ -379,13 +20,14 @@
         />
         <button id="set-username-btn">Chatga kirish</button>
       </div>
+      <span id="errormsg"></span>
     </div>
 
     <div class="chat-container" id="chat-container">
       <div class="chat-header">
         <div class="title">
-          <span class="avatar-header" id="user-avatar-header">C</span>
-          <span id="chat-title">Chat Ilovasi</span>
+          <span class="avatar-header" id="user-avatar-header">N</span>
+          <span id="chat-title">Nima gap</span>
         </div>
         <button class="online-users-toggle" id="online-users-toggle">
           &#9776;
@@ -401,7 +43,13 @@
           placeholder="Xabar yozing..."
           autocomplete="off"
         />
-        <button id="send-button" disabled>Yuborish</button>
+        <button id="send-button" disabled>
+          <img
+            style="width: 20px; height: 20px; color: white"
+            src="./image/sendimg.png"
+            alt=""
+          />
+        </button>
       </div>
 
       <div class="online-users-panel" id="online-users-panel">
@@ -441,6 +89,7 @@
       // --- Foydalanuvchi nomini kiritish funksiyasi ---
       setUsernameBtn.addEventListener("click", () => {
         const enteredUsername = usernameInput.value.trim();
+        const errormsg = document.getElementById("errormsg");
         if (enteredUsername) {
           username = enteredUsername.substring(0, 15); // Maksimal 15 ta belgi
           userAvatarHeader.textContent = username.charAt(0).toUpperCase(); // Avatarga birinchi harfni qo'yish
@@ -448,7 +97,10 @@
           socket.emit("setUsername", username); // Serverga foydalanuvchi nomini yuborish
           messageInput.focus(); // Xabar kiritish maydoniga fokuslanish
         } else {
-          alert("Iltimos, ismingizni kiriting!");
+          errormsg.textContent = "Iltimos, ismingizni kiriting!";
+          setTimeout(() => {
+            errormsg.textContent = "";
+          }, 6000);
           usernameInput.focus();
         }
       });
@@ -533,13 +185,41 @@
         chatMessages.appendChild(systemMessageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
+      function stringToColor(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+          hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        let color = "#";
+        for (let i = 0; i < 3; i++) {
+          const value = (hash >> (i * 8)) & 0xff;
+          color += ("00" + value.toString(16)).substr(-2);
+        }
+        return color;
+      }
 
       // --- Onlayn foydalanuvchilar ro'yxatini yangilash ---
       function updateOnlineUsersList(users) {
         onlineUsersList.innerHTML = ""; // Eski ro'yxatni tozalash
         users.forEach((user) => {
           const li = document.createElement("li");
-          li.textContent = user;
+
+          // Avatar
+          const avatarSpan = document.createElement("span");
+          avatarSpan.textContent = user.charAt(0).toUpperCase();
+          avatarSpan.classList.add("user-avatar");
+
+          // Rang beramiz
+          avatarSpan.style.backgroundColor = stringToColor(user);
+
+          // User ismi
+          const usernameSpan = document.createElement("span");
+          usernameSpan.textContent = " " + user;
+
+          // Qo'shamiz
+          li.appendChild(avatarSpan);
+          li.appendChild(usernameSpan);
+
           onlineUsersList.appendChild(li);
         });
       }
