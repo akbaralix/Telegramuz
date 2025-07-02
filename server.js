@@ -21,9 +21,6 @@ app.use(cors());
 // Foydalanuvchilar sonini kuzatish uchun
 let onlineUsers = {}; // { socketId: username }
 
-// Static fayllarni (masalan, index.html) taqdim etish uchun
-// Agar siz HTML faylni to'g'ridan-to'g'ri brauzerda ochsangiz, bu qism shart emas.
-// Lekin agar siz server orqali taqdim etmoqchi bo'lsangiz, kerak bo'ladi.
 app.use(express.static(path.join(__dirname, "public")));
 io.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} foydalanuvchi ulandi`);
