@@ -27,7 +27,7 @@ io.on("connection", (socket) => {
   socket.on("setUsername", (username) => {
     onlineUsers[socket.id] = username;
     // Boshqa foydalanuvchilarga yangi foydalanuvchi ulanganini xabar berish
-    io.emit("userJoined", username);
+    socket.broadcast.emit("userJoined", username);
     // Yangi foydalanuvchiga hozirgi onlayn foydalanuvchilar ro'yxatini yuborish
     socket.emit("onlineUsers", Object.values(onlineUsers));
     // Barchaga yangilangan onlayn foydalanuvchilar ro'yxatini yuborish
@@ -36,18 +36,23 @@ io.on("connection", (socket) => {
 
   // Clientdan xabar qabul qilish
   socket.on("chatMessage", (msg) => {
-    const username = onlineUsers[socket.id] || "Noma' foydalanuvchi";
+    const username = onlineUsers[socket.id];
+    if (!username) {
+      console.warn(
+        `⚠️: Noma'lum foydalanuvchi (${socket.id}) xabar yubormoqchi bo‘ldi.`
+      );
+      return; // to‘xtatamiz
+    }
+
     const timestamp = new Date().toLocaleTimeString("uz-UZ", {
-      timeZone: "Asia/Tashkent",
       hour: "2-digit",
       minute: "2-digit",
     });
 
-    // Xabarni barcha ulangan clientlarga yuborish
     io.emit("message", {
       user: username,
       text: msg,
-      timestamp: timestamp,
+      timestamp,
       senderId: socket.id,
     });
   });
