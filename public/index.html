@@ -74,7 +74,7 @@
 
       userAvatarHeader.textContent = username.charAt(0).toUpperCase();
 
-      const socket = io("https://telegramuz.onrender.com", {
+      const socket = io("https://telegramuz.onrender.com/", {
         transports: ["websocket"],
       });
 
@@ -173,12 +173,10 @@
       }
 
       socket.on("connect", () => {
-        console.log("Ulandik");
         socket.emit("setUsername", username);
       });
 
       socket.on("disconnect", () => {
-        console.log("Uzildik");
         addSystemMessage("Server bilan aloqa uzildi.");
       });
 

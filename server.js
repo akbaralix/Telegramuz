@@ -38,11 +38,11 @@ io.on("connection", (socket) => {
   socket.on("chatMessage", (msg) => {
     const username = onlineUsers[socket.id] || "Noma'lum foydalanuvchi";
     const timestamp = new Date().toLocaleTimeString("uz-UZ", {
+      timeZone: "Asia/Tashkent",
       hour: "2-digit",
       minute: "2-digit",
     });
 
-    console.log(`[${timestamp}] ${username}: ${msg}`);
     // Xabarni barcha ulangan clientlarga yuborish
     io.emit("message", {
       user: username,
@@ -56,7 +56,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const disconnectedUsername = onlineUsers[socket.id];
     if (disconnectedUsername) {
-      // console.log(`🔥: ${disconnectedUsername} (ID: ${socket.id}) uzildi`);
       delete onlineUsers[socket.id];
       // Boshqa foydalanuvchilarga foydalanuvchi uzilganini xabar berish
       io.emit("userLeft", disconnectedUsername);
