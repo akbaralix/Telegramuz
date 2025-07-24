@@ -144,19 +144,21 @@ body {
 
 /* Chat xabarlari maydoni */
 .chat-messages {
-  flex-grow: 1;
-  padding: 10px 15px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 60px; /* pastdagi input maydon bo‘yicha */
   overflow-y: auto;
-  background-image: url('./image/background.jpg'); /* noto‘g‘ri edi: .//image — to‘g‘rilandi */
+  padding: 10px;
+  background-image: url('./image/background.jpg');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
   gap: 5px;
-  position: relative;
-  min-height: 100dvh; /* muammoni kamaytiradi */
 }
+
 
 /* Har bir xabar uchun stil */
 .message-wrapper {
