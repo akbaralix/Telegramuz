@@ -147,14 +147,15 @@ body {
   flex-grow: 1;
   padding: 10px 15px;
   overflow-y: auto;
-  background-image: url(.//image/background.jpg);
+  background-image: url('./image/background.jpg'); /* noto‘g‘ri edi: .//image — to‘g‘rilandi */
   background-size: cover;
   background-position: center;
-
+  background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
-  gap: 5px; /* Xabarlar orasidagi bo'shliq */
-  position: relative; /* Avtomatik scroll uchun */
+  gap: 5px;
+  position: relative;
+  min-height: 100dvh; /* muammoni kamaytiradi */
 }
 
 /* Har bir xabar uchun stil */
