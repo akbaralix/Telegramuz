@@ -23,7 +23,7 @@ let onlineUsers = {}; // { socketId: username }
 
 app.use(express.static(path.join(__dirname, "public")));
 io.on("connection", (socket) => {
-  console.log(`⚡: ${socket.id} foydalanuvchi ulandi`);
+  // console.log(`⚡: ${socket.id} foydalanuvchi ulandi`);
 
   // Foydalanuvchi nomini qabul qilish
   socket.on("setUsername", (username) => {
@@ -59,7 +59,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const disconnectedUsername = onlineUsers[socket.id];
     if (disconnectedUsername) {
-      console.log(`🔥: ${disconnectedUsername} (ID: ${socket.id}) uzildi`);
+      // console.log(`🔥: ${disconnectedUsername} (ID: ${socket.id}) uzildi`);
       delete onlineUsers[socket.id];
       // Boshqa foydalanuvchilarga foydalanuvchi uzilganini xabar berish
       io.emit("userLeft", disconnectedUsername);
@@ -72,5 +72,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(port, () => {
-  console.log(`Server http://localhost:${port} portida ishlamoqda`);
+  // console.log(`Server http://localhost:${port} portida ishlamoqda`);
 });

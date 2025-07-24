@@ -123,20 +123,19 @@ body {
 }
 .online-users-list li {
   border-radius: 8px;
-  background-color: #0f0e0ef8;
+  background-color: #0f0e0e;
   margin-top: 5px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2); */
   padding: 8px 10px;
   font-weight: 500;
   border: 1px solid #ddd;
   transition: 0.4s ease;
-  /* border-bottom: 1px solid #eee; */
   color: white;
+  cursor: pointer;
 }
-.online-users-list li:hover {
+.online-users-list li:active {
   transform: scale(0.95); /* Hover holatida kattalashtirish */
   background-color: #1a1a1a; /* Hover holatida fon rangi */
-  cursor: pointer;
 }
 
 .online-users-list li:last-child {

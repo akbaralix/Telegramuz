@@ -9,20 +9,6 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   </head>
   <body>
-    <div class="username-modal" id="username-modal">
-      <div class="username-modal-content">
-        <h2>Ismingizni kiriting</h2>
-        <input
-          type="text"
-          id="username-input"
-          placeholder="Ismingizni kiriting..."
-          maxlength="15"
-        />
-        <button id="set-username-btn">Chatga kirish</button>
-      </div>
-      <span id="errormsg"></span>
-    </div>
-
     <div class="chat-container" id="chat-container">
       <div class="chat-header">
         <div class="title">
@@ -64,10 +50,17 @@
     </div>
 
     <script>
-      // DOM elementlarini tanlash
-      const usernameModal = document.getElementById("username-modal");
-      const usernameInput = document.getElementById("username-input");
-      const setUsernameBtn = document.getElementById("set-username-btn");
+      // URL'dan username ni olish
+      const params = new URLSearchParams(window.location.search);
+      const username = params.get("username");
+      if (!username || username.trim() === "") {
+        window.location.href = "../login.html";
+      } else {
+        // Agar username bor bo‘lsa — uni belgilaymiz
+        localStorage.setItem("username", username);
+      }
+      window.history.replaceState({}, document.title, window.location.pathname);
+
       const userAvatarHeader = document.getElementById("user-avatar-header");
       const chatMessages = document.getElementById("chat-messages");
       const messageInput = document.getElementById("message-input");
@@ -79,64 +72,31 @@
       );
       const onlineUsersList = document.getElementById("online-users-list");
 
-      let username = ""; // Foydalanuvchi nomi
-      // Socket.IO serverga ulanish
-      // E'tibor bering: Bu manzilda sizning serveringiz ishlashi kerak.
+      userAvatarHeader.textContent = username.charAt(0).toUpperCase();
+
       const socket = io("https://telegramuz.onrender.com", {
         transports: ["websocket"],
       });
 
-      // --- Foydalanuvchi nomini kiritish funksiyasi ---
-      setUsernameBtn.addEventListener("click", () => {
-        const enteredUsername = usernameInput.value.trim();
-        const errormsg = document.getElementById("errormsg");
-        if (enteredUsername) {
-          username = enteredUsername.substring(0, 15); // Maksimal 15 ta belgi
-          userAvatarHeader.textContent = username.charAt(0).toUpperCase(); // Avatarga birinchi harfni qo'yish
-          usernameModal.style.display = "none"; // Modal oynani yopish
-          socket.emit("setUsername", username); // Serverga foydalanuvchi nomini yuborish
-          messageInput.focus(); // Xabar kiritish maydoniga fokuslanish
-        } else {
-          errormsg.textContent = "Iltimos, ismingizni kiriting!";
-          setTimeout(() => {
-            errormsg.textContent = "";
-          }, 6000);
-          usernameInput.focus();
-        }
-      });
-
-      usernameInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          setUsernameBtn.click();
-        }
-      });
-
-      // --- Xabar yuborish funksiyasi ---
       function sendMessage() {
         const messageText = messageInput.value.trim();
         if (messageText && username) {
-          // Xabar bo'sh bo'lmasa va ism kiritilgan bo'lsa
-          socket.emit("chatMessage", messageText); // Serverga xabarni yuborish
-          messageInput.value = ""; // Inputni tozalash
-          toggleSendButton(); // Tugma holatini yangilash
+          socket.emit("chatMessage", messageText);
+          messageInput.value = "";
+          toggleSendButton();
         }
       }
 
       sendButton.addEventListener("click", sendMessage);
-
-      messageInput.addEventListener("input", toggleSendButton); // Input o'zgarganda tugmani tekshirish
+      messageInput.addEventListener("input", toggleSendButton);
       messageInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          sendMessage();
-        }
+        if (e.key === "Enter") sendMessage();
       });
 
-      // Yuborish tugmasini aktiv/deaktiv qilish
       function toggleSendButton() {
         sendButton.disabled = messageInput.value.trim() === "";
       }
 
-      // --- Xabarni chat oynasiga qo'shish funksiyasi ---
       function addMessageToChat(msg) {
         const messageWrapper = document.createElement("div");
         messageWrapper.classList.add("message-wrapper");
@@ -157,27 +117,24 @@
 
           const avatarDiv = document.createElement("div");
           avatarDiv.classList.add("avatar");
-          avatarDiv.textContent = msg.user.charAt(0).toUpperCase(); // Boshqa foydalanuvchi avatari
+          avatarDiv.textContent = msg.user.charAt(0).toUpperCase();
 
           const senderNameSpan = document.createElement("span");
           senderNameSpan.classList.add("sender-name");
           senderNameSpan.textContent = msg.user;
-          messageDiv.appendChild(senderNameSpan); // Ismni xabar ichiga qo'shish
-          messageWrapper.appendChild(avatarDiv); // Avatarni xabar oldiga qo'shish
+
+          messageDiv.appendChild(senderNameSpan);
+          messageWrapper.appendChild(avatarDiv);
         }
 
-        const textNode = document.createTextNode(msg.text); // Xabar matni
+        const textNode = document.createTextNode(msg.text);
         messageDiv.appendChild(textNode);
-        messageDiv.appendChild(timestampSpan); // Vaqtni xabar ichiga qo'shish
-
+        messageDiv.appendChild(timestampSpan);
         messageWrapper.appendChild(messageDiv);
         chatMessages.appendChild(messageWrapper);
-
-        // Chat oynasini pastga avtomatik skroll qilish
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
 
-      // --- Tizim xabarini chatga qo'shish (foydalanuvchi kirdi/chiqdi) ---
       function addSystemMessage(text) {
         const systemMessageDiv = document.createElement("div");
         systemMessageDiv.classList.add("system-message");
@@ -185,6 +142,7 @@
         chatMessages.appendChild(systemMessageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
+
       function stringToColor(str) {
         let hash = 0;
         for (let i = 0; i < str.length; i++) {
@@ -198,53 +156,38 @@
         return color;
       }
 
-      // --- Onlayn foydalanuvchilar ro'yxatini yangilash ---
       function updateOnlineUsersList(users) {
-        onlineUsersList.innerHTML = ""; // Eski ro'yxatni tozalash
+        onlineUsersList.innerHTML = "";
         users.forEach((user) => {
           const li = document.createElement("li");
-
-          // Avatar
           const avatarSpan = document.createElement("span");
           avatarSpan.textContent = user.charAt(0).toUpperCase();
           avatarSpan.classList.add("user-avatar");
-
-          // Rang beramiz
           avatarSpan.style.backgroundColor = stringToColor(user);
-
-          // User ismi
           const usernameSpan = document.createElement("span");
           usernameSpan.textContent = " " + user;
-
-          // Qo'shamiz
           li.appendChild(avatarSpan);
           li.appendChild(usernameSpan);
-
           onlineUsersList.appendChild(li);
         });
       }
 
-      // --- Socket.IO event handlerlari ---
       socket.on("connect", () => {
-        console.log("Serverga ulandik!");
-        // Foydalanuvchi nomini kiritish modalini ko'rsatish
-        usernameModal.style.display = "flex";
-        usernameInput.focus();
+        console.log("Ulandik");
+        socket.emit("setUsername", username);
       });
 
       socket.on("disconnect", () => {
-        console.log("Serverdan uzildik!");
-        addSystemMessage(
-          "Server bilan aloqa uzildi. Iltimos, sahifani yangilang."
-        );
+        console.log("Uzildik");
+        addSystemMessage("Server bilan aloqa uzildi.");
       });
 
       socket.on("message", (msg) => {
-        addMessageToChat(msg); // Serverdan kelgan xabarni ko'rsatish
+        addMessageToChat(msg);
       });
 
       socket.on("userJoined", (user) => {
-        addSystemMessage(`${user} chatga qo'shildi.`);
+        addSystemMessage(`${user} chatga qo‘shildi.`);
       });
 
       socket.on("userLeft", (user) => {
@@ -252,16 +195,13 @@
       });
 
       socket.on("onlineUsers", (users) => {
-        // Birinchi marta ulanganida onlayn foydalanuvchilarni qabul qilish
         updateOnlineUsersList(users);
       });
 
       socket.on("updateOnlineUsers", (users) => {
-        // Onlayn foydalanuvchilar ro'yxati yangilanganda
         updateOnlineUsersList(users);
       });
 
-      // --- Online foydalanuvchilar panelini ochish/yopish ---
       onlineUsersToggle.addEventListener("click", () => {
         onlineUsersPanel.classList.add("open");
       });
@@ -270,7 +210,6 @@
         onlineUsersPanel.classList.remove("open");
       });
 
-      // Paneldan tashqariga bosilganda yopish
       document.addEventListener("click", (event) => {
         if (
           onlineUsersPanel.classList.contains("open") &&
