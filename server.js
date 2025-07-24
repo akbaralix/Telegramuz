@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
 
   // Clientdan xabar qabul qilish
   socket.on("chatMessage", (msg) => {
-    const username = onlineUsers[socket.id] || "Noma'lum foydalanuvchi";
+    const username = onlineUsers[socket.id] || "Noma' foydalanuvchi";
     const timestamp = new Date().toLocaleTimeString("uz-UZ", {
       timeZone: "Asia/Tashkent",
       hour: "2-digit",

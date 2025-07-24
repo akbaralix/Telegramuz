@@ -107,7 +107,7 @@
   </head>
   <body>
     <div class="container">
-      <h2 class="title">Nima gap</h2>
+      <h2 class="title">Nima Gap</h2>
       <form onsubmit="login(event)">
         <div class="input-group">
           <input
@@ -151,10 +151,9 @@
         }
 
         errormsg.textContent = "";
+        localStorage.setItem("username", user);
         // Username ni URL orqali yuborish
-        window.location.href = `/index.html?username=${encodeURIComponent(
-          user
-        )}`;
+        window.location.href = "/index.html";
       }
     </script>
   </body>

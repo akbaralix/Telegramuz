@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nima Gap</title>
+    <title>NimaGap</title>
     <link rel="icon" type="image/x-icon" href="image/Favaicon.jpg" />
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
@@ -13,7 +13,7 @@
       <div class="chat-header">
         <div class="title">
           <span class="avatar-header" id="user-avatar-header">N</span>
-          <span id="chat-title">Nima gap</span>
+          <span id="chat-title">NimaGap</span>
         </div>
         <button class="online-users-toggle" id="online-users-toggle">
           &#9776;
@@ -50,16 +50,11 @@
     </div>
 
     <script>
-      // URL'dan username ni olish
-      const params = new URLSearchParams(window.location.search);
-      const username = params.get("username");
+      const username = localStorage.getItem("username");
+
       if (!username || username.trim() === "") {
         window.location.href = "/login.html";
-      } else {
-        // Agar username bor bo‘lsa — uni belgilaymiz
-        localStorage.setItem("username", username);
       }
-      window.history.replaceState({}, document.title, window.location.pathname);
 
       const userAvatarHeader = document.getElementById("user-avatar-header");
       const chatMessages = document.getElementById("chat-messages");
@@ -185,7 +180,9 @@
       });
 
       socket.on("userJoined", (user) => {
-        addSystemMessage(`${user} chatga qo‘shildi.`);
+        if (user !== username) {
+          addSystemMessage(`${user} chatga qo‘shildi.`);
+        }
       });
 
       socket.on("userLeft", (user) => {
