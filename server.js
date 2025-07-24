@@ -23,12 +23,9 @@ let onlineUsers = {}; // { socketId: username }
 
 app.use(express.static(path.join(__dirname, "public")));
 io.on("connection", (socket) => {
-  // console.log(`⚡: ${socket.id} foydalanuvchi ulandi`);
-
   // Foydalanuvchi nomini qabul qilish
   socket.on("setUsername", (username) => {
     onlineUsers[socket.id] = username;
-    console.log(`${username} (ID: ${socket.id}) chatga kirdi.`);
     // Boshqa foydalanuvchilarga yangi foydalanuvchi ulanganini xabar berish
     io.emit("userJoined", username);
     // Yangi foydalanuvchiga hozirgi onlayn foydalanuvchilar ro'yxatini yuborish

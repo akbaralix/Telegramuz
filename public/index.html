@@ -54,7 +54,7 @@
       const params = new URLSearchParams(window.location.search);
       const username = params.get("username");
       if (!username || username.trim() === "") {
-        window.location.href = "../login.html";
+        window.location.href = "/login.html";
       } else {
         // Agar username bor bo‘lsa — uni belgilaymiz
         localStorage.setItem("username", username);
