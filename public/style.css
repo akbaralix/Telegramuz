@@ -47,6 +47,19 @@ body {
   display: flex;
   align-items: center;
 }
+.btn-title {
+  background-color: #212121;
+  border: none;
+}
+#chat-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
 .chat-header .avatar-header {
   width: 40px;
   height: 40px;
@@ -157,7 +170,6 @@ body {
   position: relative; /* Avtomatik scroll uchun */
 }
 
-
 /* Har bir xabar uchun stil */
 .message-wrapper {
   display: flex;
@@ -261,10 +273,10 @@ body {
   margin-right: 10px;
 }
 .chat-input-container button {
-  background-color: #917df8; /* Telegram rangiga o'xshash */
+  background: none;
   color: white;
   border: none;
-  border: 1px solid rgba(255, 255, 255, 0.26);
+  /* border: 1px solid rgba(255, 255, 255, 0.26); */
   padding: 10px 18px;
   border-radius: 22px;
   cursor: pointer;
@@ -277,10 +289,10 @@ body {
   min-height: 45px;
 }
 .chat-input-container button:hover:not(:disabled) {
-  background-color: #6150b7;
 }
 .chat-input-container button:disabled {
-  background-color: #6e669ac8;
+  display: none;
+
   cursor: not-allowed;
 }
 

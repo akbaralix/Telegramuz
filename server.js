@@ -45,6 +45,7 @@ io.on("connection", (socket) => {
     }
 
     const timestamp = new Date().toLocaleTimeString("uz-UZ", {
+      timeZone: "Asia/Tashkent",
       hour: "2-digit",
       minute: "2-digit",
     });
