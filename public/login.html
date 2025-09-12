@@ -149,7 +149,14 @@
           errormsg.textContent = "Iltimos barcha maydonni to‘ldiring";
           return;
         }
-
+        if (user.length < 3 || user.length > 20) {
+          errormsg.textContent = "Ism 3 dan 20 ta belgigacha bo'lishi kerak";
+          return;
+        }
+        if (pass.length < 6 || pass.length > 20) {
+          errormsg.textContent = "Parol 6 dan 20 ta belgigacha bo'lishi kerak";
+          return;
+        }
         errormsg.textContent = "";
         localStorage.setItem("username", user);
         // Username ni URL orqali yuborish

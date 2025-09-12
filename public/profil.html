@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <title>NimaGap - Profil</title>
+    <style>
+      *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .profil-container {
+        height: 100vh;
+        margin: auto;
+        background-color: #333;
+        padding: 20px;
+        border: 1px solid #ccc;
+        color: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .back-button {
+        text-decoration: none;
+        color: #fff;
+
+        margin-bottom: 20px;
+        display: inline-block;
+      }
+      .user-profil {
+        margin: 0 auto;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .user-profil img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+        border: 2px solid #fff;
+      }
+      #profile-image-input {
+        display: none;
+      }
+      .bi-upload{
+        position: absolute;
+        margin-left: -30px;
+        margin-top: 70px;
+        background-color: white;
+        border-radius: 50%;
+        padding: 5px;
+        color: #333;
+        cursor: pointer;
+      }
+      .edit-button{
+        padding: 12px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+      .user-actions{
+        
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        font-size: 18px;
+      }
+      .user-actions p{
+        cursor: pointer;
+        border-bottom: 1px solid #555;
+        padding-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+      .user-actions p:hover {
+        color: #c7c2c2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="profil-container">
+      <a class="back-button" href="index.html"><i class="bi bi-arrow-left"></i> Back</a>
+
+      <div class="user-profil">
+        <img src="image/background.jpg" alt="">
+        <input type="file" id="profile-image-input">
+        <label for="profile-image-input" class="custom-file-upload">
+          <i class="bi bi-upload"></i>
+        </label>
+        <h2 id="user-profile-name">Foydalanuvchi</h2>
+      </div>
+      <button class="edit-button" onclick="editProfile()">Taxrirlash</button>
+      <div class="user-actions">
+      <p><i class="bi bi-person"></i>Profil</p>
+      <p><i class="bi bi-gear"></i>Sozlamalar</p>
+      <p><i class="bi bi-share"></i>Share</p>
+      <p><i class="bi bi-box-arrow-right"></i>Chiqish</p>
+      <p><i class="bi bi-question-circle"></i>Yordam</p>
+      <p><i class="bi bi-info-circle"></i>Biz haqimizda</p>
+    </div>
+    <script>
+      function editProfile() {
+        const newName = prompt("Yangi ismingizni kiriting:");
+        if (newName) {
+          document.getElementById("user-profile-name").textContent = newName;
+          localStorage.setItem("username", newName);
+        }
+      }
+      const userName = localStorage.getItem("username") || "Foydalanuvchi";
+      document.getElementById("user-profile-name").textContent = userName;
+    </script>
+  </body>
+</html>
