@@ -13,6 +13,7 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
       }
       body {
         font-family: Arial, sans-serif;
@@ -91,6 +92,73 @@
       .user-actions p:hover {
         color: #c7c2c2;
       }
+      .ism-taxrir{
+        display: none;
+        width: 300px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
+      .ism-taxrir h2{
+        margin-bottom: 15px;
+        color: #333;
+      }
+      .ism-taxrir input{
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
+        font-size: 16px;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .ism-taxrir button{
+        padding: 10px 15px;
+        outline: none;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        width: 100%;
+      }
+      .ism-taxrir button:hover{
+        background-color: #218838;
+      }
+      .ism-taxrir #error-message{
+        margin-bottom: 10px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .close-btn{
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        cursor: pointer;
+      }
+      .overflow{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 500;
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -98,7 +166,7 @@
       <a class="back-button" href="index.html"><i class="bi bi-arrow-left"></i> Back</a>
 
       <div class="user-profil">
-        <img src="image/background.jpg" alt="">
+        <img src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png" alt="">
         <input type="file" id="profile-image-input">
         <label for="profile-image-input" class="custom-file-upload">
           <i class="bi bi-upload"></i>
@@ -114,16 +182,86 @@
       <p><i class="bi bi-question-circle"></i>Yordam</p>
       <p><i class="bi bi-info-circle"></i>Biz haqimizda</p>
     </div>
+    <div class="ism-taxrir">
+      <h2>Ismni taxrirlash</h2>
+      <span id="close-btn" class="close-btn">X</span>
+      <input type="text" id="new-username" placeholder="Yangi ism">
+      <div id="error-message" style="color: red;"></div>
+      <button onclick="saveNewUsername()">Saqlash</button>
+    </div>
+    <div class="overflow" id="overflow"></div>
+
+
     <script>
-      function editProfile() {
-        const newName = prompt("Yangi ismingizni kiriting:");
-        if (newName) {
-          document.getElementById("user-profile-name").textContent = newName;
-          localStorage.setItem("username", newName);
-        }
-      }
-      const userName = localStorage.getItem("username") || "Foydalanuvchi";
-      document.getElementById("user-profile-name").textContent = userName;
+    // Modalni ochish
+function editProfile() {
+  document.querySelector(".ism-taxrir").style.display = "block";
+  document.querySelector(".overflow").style.display = "block";
+}
+
+// Yangi ismni saqlash
+function saveNewUsername() {
+  const newUsername = document.getElementById("new-username").value.trim();
+  const error = document.getElementById("error-message");
+
+  if (newUsername === "") {
+    error.textContent = "Iltimos, ismni kiriting.";
+    return;
+  }
+  if (newUsername.length < 3 || newUsername.length > 20) {
+    error.textContent = "Ism 3 – 20 ta belgi orasida bo‘lishi kerak.";
+    return;
+  }
+
+  document.getElementById("user-profile-name").textContent = newUsername;
+  localStorage.setItem("username", newUsername);
+
+  document.querySelector(".ism-taxrir").style.display = "none";
+  document.querySelector(".overflow").style.display = "none";
+  error.textContent = "";
+  document.getElementById("new-username").value = "";
+}
+
+// Modalni yopish (fon bosilganda)
+const overflow = document.getElementById("overflow");
+overflow.addEventListener("click", () => {
+  document.querySelector(".ism-taxrir").style.display = "none";
+  overflow.style.display = "none";
+});
+
+// Modalni yopish (X tugmasi bosilganda)
+document.getElementById("close-btn").addEventListener("click", () => {
+  document.querySelector(".ism-taxrir").style.display = "none";
+  overflow.style.display = "none";
+});
+
+// Saqlangan ismni yuklash
+const savedName = localStorage.getItem("username") || "Foydalanuvchi";
+document.getElementById("user-profile-name").textContent = savedName;
+
+// Profil rasmi yuklash
+const profileImageInput = document.getElementById("profile-image-input");
+const profileImage = document.querySelector(".user-profil img");
+
+// Oldindan saqlangan rasmni yuklash
+const savedImage = localStorage.getItem("profileImage");
+if (savedImage) {
+  profileImage.src = savedImage;
+}
+
+// Yangi rasmni tanlash va saqlash
+profileImageInput.addEventListener("change", function () {
+  const file = this.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      profileImage.src = e.target.result;
+      localStorage.setItem("profileImage", e.target.result);
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
     </script>
   </body>
 </html>

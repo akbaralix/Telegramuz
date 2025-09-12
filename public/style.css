@@ -18,7 +18,7 @@ body {
   background-size: cover;
   background-position: center;
   color: #333;
-  overflow: hidden; /* Mobil uchun ortiqcha scrollni yo'qotish */
+  /* overflow: hidden; Mobil uchun ortiqcha scrollni yo'qotish */
 }
 .settings-menu {
   display: flex;
@@ -184,7 +184,7 @@ body {
   background-size: cover;
   background-position: center;
   display: flex;
-  position: fixed;
+  /* position: fixed; */
   flex-direction: column;
   gap: 5px; /* Xabarlar orasidagi bo'shliq */
   position: relative;
@@ -439,8 +439,10 @@ img:hover {
     align-items: flex-start; /* Mobil qurilmalarda tepadan boshlash */
   }
   .chat-container {
-    border-radius: 0; /* Telefonlarda butun ekranni egallashi uchun */
-    box-shadow: none; /* Mobil qurilmalarda soya kerak emas */
+    border-radius: 0;
+    box-shadow: none;
+    height: 100vh;
+    max-width: 100%;
   }
   .chat-messages {
     padding: 8px; /* Ichki bo'shliqni kamaytirish */
