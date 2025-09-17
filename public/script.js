@@ -1,32 +1,50 @@
 const username = localStorage.getItem("username");
-const avatar = document.getElementById("user-avatar");
-const storedAvatar = localStorage.getItem("profileImage");
-if (storedAvatar) {
-  avatar.src = storedAvatar;
-}
+const avatarUrl = localStorage.getItem("profileImage");
+document.getElementById("user-avatar-header").src = avatarUrl;
 
 if (!username || username.trim() === "") {
   window.location.href = "/login.html";
 }
 
-const settingslink = document.getElementById("settings-link");
 const audio = new Audio("send-msg/send-message.mp3");
-const userAvatarHeader = document.getElementById("user-avatar-header");
 const chatMessages = document.getElementById("chat-messages");
 const messageInput = document.getElementById("message-input");
 const sendButton = document.getElementById("send-button");
 const onlineUsersToggle = document.getElementById("online-users-toggle");
 const onlineUsersPanel = document.getElementById("online-users-panel");
+const onlineUsersList = document.getElementById("online-users-list");
 const closeOnlineUsersPanelBtn = document.getElementById(
   "close-online-users-panel"
 );
-const onlineUsersList = document.getElementById("online-users-list");
 
-settingslink.addEventListener("click", () => {
-  chatmsg.style.display = "block";
+const chatlink = document.getElementById("chat-link");
+
+chatlink.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  const msg1 = document.getElementById("chatmsg");
+  const msg2 = document.getElementById("chatmsgs");
+
+  // ko'rsatish
+  msg1.style.display = "block";
+  msg2.style.display = "block";
+
+  setTimeout(() => {
+    msg1.classList.add("show");
+    msg2.classList.add("show");
+  }, 10); // keyingi freymda opacity ishga tushadi
+
+  // 5 soniyadan keyin yo'qotish
+  setTimeout(() => {
+    msg1.classList.remove("show");
+    msg2.classList.remove("show");
+    setTimeout(() => {
+      msg1.style.display = "none";
+      msg2.style.display = "none";
+    }, 500); // animatsiya tugashini kutish
+  }, 5000);
 });
 
-userAvatarHeader.textContent = username.charAt(0).toUpperCase();
 const socket = io("https://telegramuz.onrender.com/", {
   transports: ["websocket"],
 });
@@ -45,7 +63,13 @@ sendButton.addEventListener("click", () => {
 });
 sendButton.addEventListener("click", sendMessage);
 messageInput.addEventListener("input", toggleSendButton);
-messageInput.addEventListener("keydown", (e) => {
+
+document.addEventListener("keydown", (e) => {
+  messageInput.focus(); // inputni faollashtiradi
+  messageInput.value += e.key.length === 0 ? e.key : ""; // faqat harflarni qo‘shadi
+});
+
+messageInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter" && messageInput.value.trim() !== "") {
     sendMessage();
     audio.play();
@@ -179,3 +203,4 @@ document.addEventListener("click", (event) => {
     onlineUsersPanel.classList.remove("open");
   }
 });
+function openSettings() {}

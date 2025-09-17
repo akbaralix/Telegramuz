@@ -20,9 +20,53 @@ body {
   color: #333;
   /* overflow: hidden; Mobil uchun ortiqcha scrollni yo'qotish */
 }
+
+.chat-coming {
+  position: absolute;
+  top: 10%;
+  background-color: #1900fd;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 1.2em;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  user-select: none;
+  width: 90%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+.strelka-chathtml {
+  position: absolute;
+  top: 8%;
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 15px solid #1900fd;
+  left: 40%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+#chatmsg,
+#chatmsgs {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  display: none;
+}
+
+#chatmsg.show,
+#chatmsgs.show {
+  display: block;
+  opacity: 1;
+}
+
 .settings-menu {
   display: flex;
-  background-color: #141414;
+  justify-content: center;
+  background-color: #0f0e0e4d;
   padding: 12px 20px;
   border-radius: 25px;
 }
@@ -30,7 +74,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 26px;
+  gap: 25px;
 }
 .settings-menu ul li {
   display: flex;
@@ -80,21 +124,29 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
 }
-.chat-header .avatar-header {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #4caf50; /* Doimiy avatar rangi */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #ffffff;
-  font-size: 1.2em;
-  cursor: pointer;
+.avatar-header {
+  display: inline-block;
+  width: 45px;
+  height: 45px;
+  line-height: 45px;
+  color: #fff;
+  text-align: center;
+  margin-right: 8px;
   font-weight: bold;
-  color: white;
-  margin-right: 10px;
-  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 50%;
+
+  border: 1.5px solid #8774e1;
+  --offset: -3px;
+  box-shadow: 0 0 2px rgba(135, 116, 225, 0.6);
+}
+.avatar-header img {
+  padding: 2px;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .online-users-toggle {
   background: none;
@@ -261,8 +313,9 @@ body {
 }
 
 .message .timestamp {
-  font-size: 0.6em;
-  color: #c2bcbc;
+  font-size: 0.7em;
+  color: rgba(255, 255, 255, 0.6);
+  user-select: none;
   margin-top: 2px;
   text-align: right;
   gap: 20px;
@@ -308,7 +361,7 @@ body {
 .chat-input-container .send-button:hover:not(:disabled) {
 }
 .chat-input-container .send-button:disabled {
-  /* display: none; */
+  display: none;
   cursor: not-allowed;
 }
 
@@ -363,35 +416,10 @@ body {
   transition: 0.3s ease;
   font-size: 1.1em;
 }
-.username-modal-content .send-button:hover {
-  background-color: #7e67f0;
-}
-
-.chat-header #user-avatar {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #3616c6;
-  object-fit: fill;
-}
-
-#chatmsg {
-  position: absolute;
-  color: white;
-  display: none;
-  padding: 10px;
-  background-color: #1900fd;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 20px;
-  z-index: 10;
-}
 
 #send-button img {
-  width: 24px; /* Kattalashtirish */
-  height: 24px;
+  width: 20px;
+  height: 20px;
   filter: brightness(0) invert(1); /* Rangni oqga aylantirish */
   transition: 0.2s ease; /* Smooth animatsiya (ixtiyoriy) */
 }
@@ -455,10 +483,24 @@ body {
   background: #555;
 }
 
+.user-avatar {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  border-radius: 50%;
+  color: #fff;
+  text-align: center;
+  margin-right: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+}
+
 /* Mobil qurilmalar uchun moslashuv (max-width: 600px dan kichik ekranlar uchun) */
 @media (max-width: 600px) {
   body {
-    align-items: flex-start; /* Mobil qurilmalarda tepadan boshlash */
+    align-items: flex-start;
   }
   .chat-container {
     border-radius: 0;
@@ -489,22 +531,4 @@ body {
   .chat-header {
     padding: 12px;
   }
-}
-#errormsg {
-  position: absolute;
-  margin-top: 170px;
-  padding-top: 10px;
-  color: red;
-}
-.user-avatar {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  line-height: 24px;
-  border-radius: 50%;
-  color: #fff;
-  text-align: center;
-  margin-right: 8px;
-  font-weight: bold;
-  cursor: pointer;
 }
