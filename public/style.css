@@ -89,7 +89,6 @@ body {
   align-items: center;
   justify-content: center;
   border: 1px solid #ffffff;
-
   font-size: 1.2em;
   cursor: pointer;
   font-weight: bold;
@@ -108,9 +107,10 @@ body {
   margin-left: 10px;
   border-radius: 10px;
 }
-.online-users-toggle:hover {
+.online-users-toggle:active {
   background-color: #333;
 }
+
 /* Online foydalanuvchilar panel */
 .online-users-panel {
   position: absolute;
@@ -158,7 +158,6 @@ body {
   border-radius: 8px;
   background-color: #0f0e0e;
   margin-top: 5px;
-  /* box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2); */
   padding: 8px 10px;
   font-weight: 500;
   border: 1px solid #ddd;
@@ -309,7 +308,7 @@ body {
 .chat-input-container .send-button:hover:not(:disabled) {
 }
 .chat-input-container .send-button:disabled {
-  display: none;
+  /* display: none; */
   cursor: not-allowed;
 }
 
@@ -367,13 +366,36 @@ body {
 .username-modal-content .send-button:hover {
   background-color: #7e67f0;
 }
-img {
+
+.chat-header #user-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #3616c6;
+  object-fit: fill;
+}
+
+#chatmsg {
+  position: absolute;
+  color: white;
+  display: none;
+  padding: 10px;
+  background-color: #1900fd;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 20px;
+  z-index: 10;
+}
+
+#send-button img {
   width: 24px; /* Kattalashtirish */
   height: 24px;
   filter: brightness(0) invert(1); /* Rangni oqga aylantirish */
   transition: 0.2s ease; /* Smooth animatsiya (ixtiyoriy) */
 }
-img:hover {
+#send-button img:hover {
   transform: scale(1.1); /* 10% kattaroq bo‘ladi */
 }
 .image-send {

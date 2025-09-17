@@ -1,9 +1,15 @@
 const username = localStorage.getItem("username");
+const avatar = document.getElementById("user-avatar");
+const storedAvatar = localStorage.getItem("profileImage");
+if (storedAvatar) {
+  avatar.src = storedAvatar;
+}
 
 if (!username || username.trim() === "") {
   window.location.href = "/login.html";
 }
 
+const settingslink = document.getElementById("settings-link");
 const audio = new Audio("send-msg/send-message.mp3");
 const userAvatarHeader = document.getElementById("user-avatar-header");
 const chatMessages = document.getElementById("chat-messages");
@@ -16,8 +22,11 @@ const closeOnlineUsersPanelBtn = document.getElementById(
 );
 const onlineUsersList = document.getElementById("online-users-list");
 
-userAvatarHeader.textContent = username.charAt(0).toUpperCase();
+settingslink.addEventListener("click", () => {
+  chatmsg.style.display = "block";
+});
 
+userAvatarHeader.textContent = username.charAt(0).toUpperCase();
 const socket = io("https://telegramuz.onrender.com/", {
   transports: ["websocket"],
 });
@@ -36,7 +45,7 @@ sendButton.addEventListener("click", () => {
 });
 sendButton.addEventListener("click", sendMessage);
 messageInput.addEventListener("input", toggleSendButton);
-messageInput.addEventListener("keypress", (e) => {
+messageInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && messageInput.value.trim() !== "") {
     sendMessage();
     audio.play();
@@ -170,4 +179,3 @@ document.addEventListener("click", (event) => {
     onlineUsersPanel.classList.remove("open");
   }
 });
-function openSettings() {}

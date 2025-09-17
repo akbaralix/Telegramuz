@@ -8,21 +8,25 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
       rel="stylesheet"
     />
-
     <link rel="icon" type="image/x-icon" href="image/Favaicon.jpg" />
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
   </head>
   <body>
     <div class="chat-container" id="chat-container">
       <div class="chat-header">
         <a style="text-decoration: none" href="profil.html">
-          <span class="avatar-header" id="user-avatar-header">N</span>
+          <img
+            id="user-avatar"
+            src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png"
+            alt=""
+          />
         </a>
         <nav class="settings-menu" id="settings-menu">
           <ul>
             <li>
-              <a href="chat.html" id="settings-link">
+              <a href="#" id="settings-link">
                 <i class="bi bi-chat-left-text"></i>
                 Chat
               </a>
@@ -42,7 +46,10 @@
       </div>
 
       <div class="chat-messages" id="chat-messages"></div>
-
+      <div id="chatmsg">
+        Chat Funksiyasi tez orada q'shiladi va bemalol o'z tanishlaringiz bilan
+        muloqot qilishingiz mumkin bo'ladi.
+      </div>
       <div class="chat-input-container">
         <input
           type="text"
