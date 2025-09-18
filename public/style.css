@@ -233,7 +233,7 @@ body {
   overflow-y: auto;
   background-image: url(.//image/background.jpg);
   background-size: cover;
-  background-position: center;
+  /* background-position: center; */
   display: flex;
   /* position: fixed; */
   flex-direction: column;

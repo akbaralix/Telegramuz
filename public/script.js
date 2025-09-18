@@ -87,14 +87,22 @@ function addMessageToChat(msg) {
   const messageDiv = document.createElement("div");
   messageDiv.classList.add("message");
 
-  const timestampSpan = document.createElement("span");
-  timestampSpan.classList.add("timestamp");
-  timestampSpan.textContent = msg.timestamp;
-
   if (msg.user === username) {
+    // userning o'z xabari
     messageWrapper.classList.add("user-message");
     messageDiv.classList.add("user");
+
+    // faqat text va vaqtni qo'shamiz
+    const textNode = document.createElement("span");
+    textNode.textContent = msg.text;
+
+    const timestampSpan = document.createElement("span");
+    timestampSpan.classList.add("timestamp");
+    timestampSpan.textContent = msg.timestamp;
+
+    messageDiv.append(textNode, timestampSpan);
   } else {
+    // boshqa user xabari
     messageWrapper.classList.add("other-message");
     messageDiv.classList.add("other");
 
@@ -107,15 +115,29 @@ function addMessageToChat(msg) {
     senderNameSpan.textContent = msg.user;
 
     messageDiv.appendChild(senderNameSpan);
+
+    // 🟢 faqat other uchun message-content
+    const contentDiv = document.createElement("div");
+    contentDiv.classList.add("message-content");
+
+    const textNode = document.createElement("span");
+    textNode.classList.add("text");
+    textNode.textContent = msg.text;
+
+    const timestampSpan = document.createElement("span");
+    timestampSpan.classList.add("timestamp");
+    timestampSpan.textContent = msg.timestamp;
+
+    contentDiv.append(textNode, timestampSpan);
+    messageDiv.appendChild(contentDiv);
+
     messageWrapper.appendChild(avatarDiv);
   }
 
-  const textNode = document.createTextNode(msg.text);
-  messageDiv.appendChild(textNode);
-  messageDiv.appendChild(timestampSpan);
   messageWrapper.appendChild(messageDiv);
   chatMessages.appendChild(messageWrapper);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: "smooth" });
 }
 
 function addSystemMessage(text) {
