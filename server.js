@@ -66,7 +66,7 @@ io.on("connection", (socket) => {
       // LIMIT Buzildi → foydalanuvchini uzatish
       socket.emit(
         "systemMessage",
-        "Siz juda tez xabar yubordingiz — server sizni uzatdi."
+        `Siz juda tez xabar yubordingiz Pashol Naxxuy bo'ling! ${username}`
       );
       socket.disconnect(true);
 
