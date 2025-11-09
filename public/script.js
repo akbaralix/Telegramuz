@@ -1,4 +1,4 @@
-const username = localStorage.getItem("username");
+let username = localStorage.getItem("username");
 const avatarUrl = localStorage.getItem("profileImage");
 document.getElementById("user-avatar-header").src = avatarUrl;
 
@@ -215,6 +215,9 @@ onlineUsersToggle.addEventListener("click", () => {
 closeOnlineUsersPanelBtn.addEventListener("click", () => {
   onlineUsersPanel.classList.remove("open");
 });
+socket.on("systemMessage", (text) => {
+  addSystemMessage(text);
+});
 
 document.addEventListener("click", (event) => {
   if (
@@ -225,4 +228,5 @@ document.addEventListener("click", (event) => {
     onlineUsersPanel.classList.remove("open");
   }
 });
+
 function openSettings() {}

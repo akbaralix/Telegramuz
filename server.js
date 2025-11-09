@@ -5,6 +5,11 @@ const socketIo = require("socket.io");
 const path = require("path");
 const cors = require("cors"); // CORS ni o'rnatish
 
+// Foydalanuvchining oxirgi xabar vaqtini saqlash
+const messageTimestamps = {}; // { socket.id: [timestamp1, timestamp2, ...] }
+// Temporary ban (ixtiyoriy, hozir faqat disconnect qilamiz)
+const usersBanUntil = {}; // { username: timestamp }
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -41,9 +46,36 @@ io.on("connection", (socket) => {
       console.warn(
         `⚠️: Noma'lum foydalanuvchi (${socket.id}) xabar yubormoqchi bo‘ldi.`
       );
-      return; // to‘xtatamiz
+      return;
     }
 
+    // RATE LIMIT LOGIC
+    const now = Date.now();
+    const windowMs = 1000; // 1 soniya oynasi
+    const limit = 2; // 1 soniyada 2 tadan ko'p xabar yubormaslik
+
+    if (!messageTimestamps[socket.id]) messageTimestamps[socket.id] = [];
+    const arr = messageTimestamps[socket.id];
+
+    // faqat oxirgi 1 soniya ichidagi xabarlarni saqlaymiz
+    const recent = arr.filter((t) => now - t < windowMs);
+    recent.push(now);
+    messageTimestamps[socket.id] = recent;
+
+    if (recent.length > limit) {
+      // LIMIT Buzildi → foydalanuvchini uzatish
+      socket.emit(
+        "systemMessage",
+        "Siz juda tez xabar yubordingiz — server sizni uzatdi."
+      );
+      socket.disconnect(true);
+
+      // tozalash
+      delete messageTimestamps[socket.id];
+      return;
+    }
+
+    // Agar limit buzilmagan bo‘lsa, normal xabar yuborish
     const timestamp = new Date().toLocaleTimeString("uz-UZ", {
       timeZone: "Asia/Tashkent",
       hour: "2-digit",

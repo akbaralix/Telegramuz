@@ -13,8 +13,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  /* background-color: #e6dedd; */
-  background-image: url(https://blog.1a23.com/wp-content/uploads/sites/2/2020/02/Desktop.png);
+  background-color: #141414;
   background-size: cover;
   background-position: center;
   color: #333;
@@ -231,13 +230,17 @@ body {
   flex-grow: 1;
   padding: 10px 15px;
   overflow-y: auto;
-  background-image: url(.//image/background.jpg);
+  /* background-image: url(.//image/background.jpg); */
+  background: linear-gradient(
+    to top,
+    rgb(109, 26, 224),
+    rgb(60, 21, 101),
+    rgb(69, 28, 83)
+  );
   background-size: cover;
-  /* background-position: center; */
   display: flex;
-  /* position: fixed; */
   flex-direction: column;
-  gap: 5px; /* Xabarlar orasidagi bo'shliq */
+  gap: 5px;
   position: relative;
 }
 
@@ -329,7 +332,6 @@ body {
   background-color: #212123;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
   position: relative;
-  /* border-top: 1px solid #ddd; */
   align-items: center;
 }
 
@@ -337,7 +339,7 @@ body {
   flex-grow: 1;
   padding: 10px 15px;
   border: 1px solid #ddd;
-  border-radius: 15px; /* Yumaloq input */
+  border-radius: 15px;
   font-size: 1em;
   outline: none;
   background-color: #212121;
@@ -348,18 +350,16 @@ body {
   background: none;
   color: white;
   border: none;
-  border-radius: 22px;
   cursor: pointer;
   font-size: 1em;
   transition: background-color 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 45px; /* Tugma o'lchami */
+  min-width: 45px;
   min-height: 45px;
 }
-.chat-input-container .send-button:hover:not(:disabled) {
-}
+
 .chat-input-container .send-button:disabled {
   display: none;
   cursor: not-allowed;
