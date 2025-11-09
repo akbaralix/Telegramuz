@@ -45,7 +45,7 @@ chatlink.addEventListener("click", (e) => {
   }, 5000);
 });
 
-const socket = io("https://telegramuz.onrender.com/", {
+const socket = io("https://nimagap.onrender.com", {
   transports: ["websocket"],
 });
 
